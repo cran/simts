@@ -1,7 +1,7 @@
-d6ab6930517a9fa30bf839a3b98dc8c9 *DESCRIPTION
+178be50dde63df85b95ba24f20f57261 *DESCRIPTION
 08657324f94cfae679f345f428c68f9b *LICENSE
 51a557b7c45567151eb82683c0f04558 *NAMESPACE
-bf369b8206c033ab3ac4d30534c941a0 *NEWS.md
+1473141767696a994e75397576776192 *NEWS.md
 9451289361b2f871a992a3288cd5b5ad *R/ACF.R
 fefc4da968e2eedb3d86170b4d1107b8 *R/RW2dimension.R
 0172c31790496853097e4ff758c7073a *R/RcppExports.R
@@ -30,7 +30,7 @@ dd52fb86d5e8502db8fd7fa0b45cc4fc *data/savingrt.rda
 3cc696aca7cd8394a6f160fd38d46549 *inst/COPYRIGHTS
 ed9528c1655a9015845e9bea31af4ecd *inst/doc/vignettes.R
 bd1c4230dda2a415aea4ec8cf7b7f916 *inst/doc/vignettes.Rmd
-1931f7447a72c2120bafcd3e1f1edf38 *inst/doc/vignettes.html
+6bf780ce3e04d73f17bb47c9036bb387 *inst/doc/vignettes.html
 298147b14152a1d3e73e51a3ea349881 *man/AIC.fitsimts.Rd
 29e62a69066cf6473a28312efc8e4beb *man/AR.Rd
 86aee9aa58575c79b1f921deea854ce6 *man/AR1.Rd
@@ -285,7 +285,7 @@ d8f81ebf74b20a18dd7bc634be095430 *man/var_drift.Rd
 081de598560ad895c6a85c53eae64a02 *src/RcppExports.cpp
 468dc9cad0040eb459f45d8a5f4f2a40 *src/additional_moments.cpp
 8f1772a6aef8656567ddc46155ea1df4 *src/additional_moments.h
-5eac7f66eea772a4f6ce53404fb2629f *src/analytical_matrix_derivatives.cpp
+0ca3079e9c6aa1740313730f1c9f4354 *src/analytical_matrix_derivatives.cpp
 5626f4ce019d568f055cdaa901a84dc3 *src/analytical_matrix_derivatives.h
 fef6331f271c8183bce4cf6e360963a2 *src/arima_gmwm.cpp
 22af672df9f1564ad9d40101d62322c4 *src/arima_gmwm.h
@@ -298,13 +298,13 @@ c01cfa6f5a30834e506bd8985c85d4a7 *src/complex_tools.cpp
 5382469e9179c152c5d4504e01fc6e69 *src/complex_tools.h
 77aed87859fc769ea4ef52355e155142 *src/covariance_matrix.cpp
 2daf5e7b8cb948588619e0d5ee5d3494 *src/covariance_matrix.h
-b1a94578773a5cc983282f402b9d467e *src/dwt.cpp
+142b16cf1ffafc767b27089f5068725b *src/dwt.cpp
 56f6cdda01e6104660565e60df484391 *src/dwt.h
-2bc1c4fc933772d1842a00a5e4248fcb *src/gen_process.cpp
+38c78f92fe7fe9244c20e77bfae8321f *src/gen_process.cpp
 62547a2e33ff159bc88007325428ae77 *src/gen_process.h
 7cf91a7b384076c28f19ba6bb4968656 *src/gmwm_logic.cpp
 875e13cd21b272515591964652024390 *src/gmwm_logic.h
-5dc803761f01590acf84b8d937b80575 *src/guess_values.cpp
+4d3618683da4f58edd40ffbeec7fdc8a *src/guess_values.cpp
 d9848624c647506a2436db2b1a7a5f00 *src/guess_values.h
 0001f4c871fee82631c04c4707fd741c *src/idf_example.cpp
 e9256c025d213dcf18e12ec68585346d *src/inference.cpp
@@ -319,7 +319,7 @@ bc89dc4adc736e99a69b7c9bee0199df *src/model_selection.h
 9c6927db6dbca31f896461571e076ca8 *src/objective_functions.h
 fe3b2f331820799bc35c8f439333500b *src/polyroot.cpp
 7e9556115555db0ed72cee53f00cdd4f *src/polyroot.h
-126c4f12526d3f17e34421e544d7c46e *src/process_to_wv.cpp
+391366b9d9fa067fe36c753627d6e210 *src/process_to_wv.cpp
 88122349488af362a5995e678680cf45 *src/process_to_wv.h
 e2e742cbd4fc0f56b1e62359afe4f039 *src/read_imu.cpp
 632298a1323cf6d08b51111730d94a9e *src/robust_components.cpp
@@ -339,7 +339,7 @@ be28d761568aaba3bd34ee6c75881c01 *src/transform_data.h
 7ba6b3c5fdb7b26fbb0328874a9b4247 *src/ts_checks.h
 625d92b0e16d490fa7d923130e24a4ec *src/ts_model_cpp.cpp
 b13014f34b9508a9f1dc640c773a43c4 *src/ts_model_cpp.h
-1441919772bbc74040cca39b3125378d *src/wave_variance.cpp
+ffdb8b7f450f67e245a0b8d7579eb337 *src/wave_variance.cpp
 b174b04a0bbbdb65d558e3b5f6058254 *src/wave_variance.h
 bf02ec793fb2cf804ab2d30bc4170484 *src/wv_filters.cpp
 e7bb1760810ce04742267d2d77ee1c7e *src/wv_filters.h
