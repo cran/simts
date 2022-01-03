@@ -58,6 +58,36 @@ arma::vec gen_wn(const unsigned int N, const double sigma2 = 1)
   return wn;
 }
 
+
+
+//' Generate a Sinusoidal Process given \eqn{\alpha^2} and \eqn{\beta}.
+//' 
+//' Simulates a Sinusoidal Process Process with parameter \eqn{\alpha^2} and \eqn{\beta}
+//' @param N      An \code{integer} for signal length.
+//' @param alpha2 A \code{double} that contains the squared amplitude parameter alpha2.
+//' @param beta A \code{double} that contains the angular frequency parameter beta.
+//' @return sn A \code{vec} containing the sinusoidal process.
+//' @section Generation Algorithm:
+//' The function first generates a initial cycle oscillation at t=0 from a Uniform law with parameter a = 0 and b = 2 * pi 
+//' and then compute the signal from its definition \deqn{X_t = \alpha \sin(\beta t + U)}.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+arma::vec gen_sin(const unsigned int N, const double alpha2 = 9e-04, const double beta = 6e-02, const double U = 1)
+{
+  arma::vec sn(N);
+  double alpha = sqrt(alpha2);
+  for(unsigned int i = 0; i < N; i++){
+    sn(i) = alpha * sin(beta * i + U);
+  }
+  
+  return sn;
+}
+
+
+
 //' Generate a Drift Process
 //' 
 //' Simulates a Drift Process with a given slope, \eqn{\omega}.
@@ -646,7 +676,24 @@ arma::vec gen_model(unsigned int N, const arma::vec& theta, const std::vector<st
       // RW
   	  else if(element_type == "RW"){
   	    x += gen_rw(N, theta_value);
-  	  } 
+  	  }
+  	  // SIN
+  	  else if(element_type == "SIN"){
+  	    // First value is alpha2, increment for sigma2
+  	    ++i_theta;
+  	    
+  	    // get beta
+  	    double beta = theta(i_theta);
+  	    
+  	    // get U
+  	    ++i_theta;
+  	    
+  	    // get U
+  	    double U = theta(i_theta);
+  	    
+  	    
+  	    x += gen_sin(N, theta_value, beta, U);
+  	  }
   	  // ARMA11
   	  else if(element_type == "ARMA11"){
   	    
@@ -742,6 +789,24 @@ arma::mat gen_lts_cpp(unsigned int N, const arma::vec& theta, const std::vector<
       x.col(i) = gen_ma1(N, theta_value, sig2);
       x.col(num_desc) += x.col(i);
     } 
+    // SIN
+    else if(element_type == "SIN"){
+      // First value is alpha2, increment for sigma2
+      ++i_theta;
+      
+      // get beta
+      double beta = theta(i_theta);
+      
+      // get U
+      ++i_theta;
+      
+      // get U
+      double U = theta(i_theta);
+      
+      // generate data
+      x.col(i) = gen_sin(N, theta_value, beta, U);
+      x.col(num_desc) += x.col(i);
+    }
     // WN
     else if(element_type == "WN") {
       x.col(i) = gen_wn(N, theta_value);

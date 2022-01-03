@@ -47,6 +47,64 @@ AR1 = function(phi = NULL, sigma2 = 1) {
   invisible(out)
 }
 
+#' Create an Sinusoidal (SIN) Process
+#'
+#' @param alpha2 A \code{double} value for the squared amplitude parameter \eqn{\alpha^2}{alpha} (see Note for details).
+#' @param beta A \code{double} value for the angular frequency parameter \eqn{\beta}{beta} (see Note for details).
+#' @param U A \code{double} value for the phase parameter \eqn{U}{U} (see Note for details).
+#' @note We consider the following sinusoidal process : \deqn{X_t = \alpha \sin(\beta t + U)}, where \eqn{U \sim \mathcal{U}(0, 2\pi)}
+#' and \eqn{\beta \in (0, \frac{\pi}{2})}
+#' @return An S3 object containing the specified ts.model with the following structure:
+#' \describe{
+#'  \item{process.desc}{Used in summary: "ALPHA2","BETA"}
+#'  \item{theta}{Parameter vector including \eqn{\alpha^2}{alpha2}, \eqn{\beta}{beta}}
+#'  \item{plength}{Number of parameters}
+#'  \item{print}{String containing simplified model}
+#'  \item{desc}{"SIN"}
+#'  \item{obj.desc}{Depth of Parameters e.g. list(1,1)}
+#'  \item{starting}{Find starting values? TRUE or FALSE (e.g. specified value)}
+#' }
+#' @author Lionel Voirol
+#' @export
+#' @examples
+#' SIN()
+#' SIN(alpha2 = .5, beta = .05)
+SIN = function(alpha2 = 9e-04, beta = 6e-02, U = NULL) {
+  starting = FALSE;
+  if(is.null(alpha2)){
+    alpha2 = 9e-04;
+    beta = 6e-02;
+    #starting = TRUE;
+  }
+  if(is.null(U)){
+    U = runif(n = 1, min = 0, max = 2*pi)
+  }
+  if(length(alpha2) != 1 & length(beta) != 1){
+    stop("Incorrect SIN model submitted. Must be double values for two parameters.")
+  }
+  if(beta <= 0 | beta > pi/2 ){
+    stop("Incorrect value of beta provided. Beta must be between 0 and pi/2")
+  }
+  if(alpha2 <= 0 ){
+    stop("Incorrect value of alpha2 provided. Alpha2 must be positive")
+  }
+  if(U < 0 | U > 2*pi){
+    stop("Incorrect value of U provided. U must be between 0 and 2 pi")
+    
+  }
+  out = structure(list(process.desc = c("ALPHA2","BETA", "U"),
+                       theta = c(alpha2,beta, U),
+                       plength = 3,
+                       desc = "SIN",
+                       print = "SIN()",
+                       obj.desc = list(c(1,1,1)),
+                       starting = starting), class = "ts.model")
+  invisible(out)
+}
+
+
+
+
 #' Definition of an Moving Average Process of Order 1
 #' 
 #' @param theta  A \code{double} value for the parameter \eqn{\theta}{theta} (see Note for details).
@@ -542,7 +600,7 @@ ARIMA = function(ar = 1, i = 0, ma = 1, sigma2 = 1.0) {
 #' SARMA(ar=0.23, ma=0.4, sar = .3, sma = .3)
 SARMA = function(ar = 1, ma = 1, sar = 1, sma = 1, s = 12, sigma2 = 1.0) {
   
-  out = SARIMA(ar = ar, i = 0,  ma = ma, sar = sar, si = 0,  sma = sma, s = 12, sigma2 = sigma2)
+  out = SARIMA(ar = ar, i = 0,  ma = ma, sar = sar, si = 0,  sma = sma, s = s, sigma2 = sigma2)
   
   invisible(out)
 }
@@ -876,3 +934,7 @@ desc.to.ts.model = function(desc){
                        starting = TRUE), class = "ts.model")
   invisible(out)
 }
+
+
+
+

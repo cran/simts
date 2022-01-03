@@ -172,9 +172,10 @@ gen_gts = function(n, model, start = 0, end = NULL, freq = 1, unit_ts = NULL, un
   }
   
   if ( is.null(end) ){
-    end = start + (n - 1)/freq} # freq conversion (unit conversion is handled in graphical function)
-  else if ( is.null(start) ){
-    start = end - (n - 1)/freq}
+    end = start + (n - 1)/freq
+    }else if ( is.null(start) ){  # freq conversion (unit conversion is handled in graphical function)
+    start = end - (n - 1)/freq
+    }
   
   # 4. 'unit_time'
   if(!is.null(unit_time)){
@@ -194,6 +195,10 @@ gen_gts = function(n, model, start = 0, end = NULL, freq = 1, unit_ts = NULL, un
   }
   
   if(!model$starting){
+    
+    if(any(model$desc == "DR") && freq != 1){
+      model$theta[model$process.desc == "DR"] = model$theta[model$process.desc == "DR"]/freq
+    }
     
     theta = model$theta
     
@@ -233,6 +238,7 @@ gen_gts = function(n, model, start = 0, end = NULL, freq = 1, unit_ts = NULL, un
 #' @title Convert Unit of Time Series Data
 #' @description Manipulate the units of time to different ones
 #' @keywords internal
+#' @export
 #' @param x          A \code{vector} containing the values on x-axis.
 #' @param from.unit  A \code{string} indicating the unit which the data is converted from.
 #' @param to.unit    A \code{string} indicating the unit which the data is converted to.
@@ -244,7 +250,6 @@ gen_gts = function(n, model, start = 0, end = NULL, freq = 1, unit_ts = NULL, un
 #'  \item{x}{Data}
 #'  \item{converted}{A \code{boolean} indicating whether conversion is made}
 #' }
-#' @export
 #' @examples
 #' x = seq(60, 3600, 60)
 #' unitConversion(x, 'sec', 'min')

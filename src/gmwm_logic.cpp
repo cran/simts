@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 - 2018  James Balamuta, Stephane Guerrier, Roberto Molinari
+/* Copyright (C) 2014 - 2020  James Balamuta, Stephane Guerrier, Roberto Molinari
  *
  * This file is part of simts R Methods Package
  *
@@ -325,11 +325,13 @@ arma::field<arma::mat> gmwm_master_cpp(arma::vec& data,
   
   // Obtain WV and confidence intervals
   arma::mat wvar = wvar_cpp(modwt_decomp, robust, eff, alpha, "eta3");
-  
+
   // Extract
   arma::vec wv_empir = wvar.col(0);
   arma::vec ci_lo = wvar.col(1);
   arma::vec ci_hi = wvar.col(2);
+  
+  
   
   //-------------------------
   // Obtain Covariance Matrix

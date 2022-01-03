@@ -1,7 +1,7 @@
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 library(simts)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Set seed for reproducibility
 set.seed(1337)
 
@@ -66,7 +66,7 @@ plot(sarma_wn_sim)
 ## ---- fig.align='center', fig.height = 7, fig.width = 7.25, fig.cap = 'Figure 7: Simulated SARMA(1,0) x (0,1) + WN(2) process with a breakdown of the underlying latent processes'----
 plot(sarma_wn_sim, fixed_range = TRUE)
 
-## ---- echo=FALSE, message=FALSE, warning=FALSE---------------------------
+## ---- echo=FALSE, message=FALSE, warning=FALSE--------------------------------
 library(datasets)
 
 ## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 1: Monthly  precipitation  series  from  1907  to  1972  taken  from @hipel1994time'----
@@ -85,7 +85,7 @@ plot(hydro)
 # Compare the standard and robust ACF
 compare_acf(hydro)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 model_hydro = estimate(AR(2), hydro, method = "rgmwm")
 model_hydro$mod$estimate
 
@@ -106,39 +106,9 @@ plot(savingrt)
 savingrt_acf = auto_corr(savingrt)
 plot(savingrt_acf)
 
-## ------------------------------------------------------------------------
+## ---- eval=TRUE---------------------------------------------------------------
 # Estimate the latent model ARMA(2,1) + RW()
 model_savings = estimate(ARMA(2,1) + RW(), savingrt, method = "gmwm")
-
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 5: Monthly Clothing Retail Sales in US for 1992-2016'----
-# Load sales dataset
-data("sales")
-
-# Simulate based on data
-sales = gts(as.vector(sales), start = 1992, freq = 12, unit_time = "year",
-            unit_ts = bquote(paste(10^6,"$")), name_ts = "Retail Sales", 
-            data_name = "Monthly Clothing Retail Sales in US for 1992-2016")
-
-# Plot sales simulation
-plot(sales)
-
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 6: Empirical autocorrelation function of Monthly Clothing Retail Sales in US for 1992-2016'----
-# Compute ACF and plot result
-sales_acf = auto_corr(sales)
-plot(sales_acf)
-
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 7: Empirical partial autocorrelation function of Monthly Clothing Retail Sales in US for 1992-2016'----
-#Compute PACF and plot result
-sales_pacf = auto_corr(sales, pacf = TRUE)
-plot(sales_pacf)
-
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 8: Empirical ACF and PACF of Monthly Clothing Retail Sales in US for 1992-2016'----
-# Compute and plot ACF and PACF
-sales_corr = corr_analysis(sales)
-
-# Get ACF and PACF values
-sales_acf = sales_corr$ACF
-sales_pacf = sales_corr$PACF
 
 ## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 9: Plot of Annual numbers of lynx trappings for 1821-1934 in Canada'----
 # Load lynx dataset 
@@ -162,7 +132,7 @@ plot(lynx_acf)
 lynx_pacf = auto_corr(lynx, pacf = TRUE)
 plot(lynx_pacf)
 
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 12: Empirical partial autocorrelation function of Annual numbers of lynx trappings in Canada for 1821-1934'----
+## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 12: Empirical partial autocorrelation function of Annual numbers of lynx trappings in Canada for 1821-1934', eval=TRUE----
 test = estimate(SARMA(2,2,1), lynx)
 check(test)
 
@@ -188,10 +158,10 @@ plot(sunspot_acf)
 sunspot_pacf = auto_corr(sunspot, pacf = TRUE)
 plot(sunspot_pacf)
 
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 16: Results on model selection for AR(p) models for Yearly numbers of sunspots from 1700 to 1988'----
+## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 16: Results on model selection for AR(p) models for Yearly numbers of sunspots from 1700 to 1988', eval=TRUE----
 select(AR(15), sunspot)
 
-## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 17: 10-steps-ahead forecasts (and confidence intervals) for Yearly numbers of sunspots from 1700 to 1988'----
+## ---- fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 17: 10-steps-ahead forecasts (and confidence intervals) for Yearly numbers of sunspots from 1700 to 1988', eval=TRUE----
 model_sunspots = estimate(AR(9), sunspot)
 predict(model_sunspots, n.ahead = 10, level = c(0.60, 0.90, 0.95))
 

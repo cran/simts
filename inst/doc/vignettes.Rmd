@@ -31,6 +31,7 @@ In this section, we briefly list, describe, and provide the syntax used to simul
 * Integrated Autoregressive Moving Average `ARIMA()`
 * Seasonal Autoregressive Integrated Moving Average `SARIMA()`
 * Seasonal Autoregressive Moving Average `SARMA()`
+* Sinusoidal process `SIN()`
 * Quantization Noise `QN()`
 
 Quantization noise is a less known process that is used in engineering applications. It can be described in layperson terms as being a good estimator of a rounding error.
@@ -145,7 +146,6 @@ In this section, we will briefly show some of the `simts` package functionalitie
 
 * [hydro](https://rdrr.io/github/SMAC-Group/datapkg/man/hydro.html): This time series contains the monthly precipitation from 1907 and going to 1972 for total of 781 observations taken from @hipel1994time.
 * [savingrt](https://rdrr.io/github/SMAC-Group/datapkg/man/savingrt.html): This dataset contains the US personal saving (after removing seasonal trends) which represent the percentage of income saved from the disposable personal income. This time series with frequency 12 starting in year 1959 and going to 2016 for a total of 691 observations.
-* [sales](http://r-exercises.com/wp-content/uploads/2017/04/sales.csv): This dataset contains the US monthly clothing retail sales in millions of dollars taken from 1992 to 2016 for a total of 302 observations. 
 * [Nile](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/Nile.html): This time series contains the measurements of the annual flow of the river Nile at Aswan (formerly Assuan), 1871–1970, in $10^8 m^3$ taken from Table 1 of @cobb1978problem.
 
 The code below shows how to setup a time series as a `gts()` object. Here, we take samples from each dataset at a rate of `freq` ticks per sample. By applying `plot()` on the result of a `gts()` object, we can observe a simple visualization of our data.
@@ -208,61 +208,16 @@ plot(savingrt_acf)
 
 This graph indicates that this time series is likely to present some non-stationary features. This is actually not a surprising observation as such data are often assumed to be close to a random walk model plus some (autocorrelated) noise. For this reason, let us use the GMWM to estimate a latent model given by the sum of two AR(1) models (equivalent to an ARMA(2,1) model) and a random walk.
 
-```{r}
+```{r, eval=TRUE}
 # Estimate the latent model ARMA(2,1) + RW()
 model_savings = estimate(ARMA(2,1) + RW(), savingrt, method = "gmwm")
 ```
 
 
-### Retail Sales Dataset
-
-Let's consider the next dataset, the `sales` time series:
-
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 5: Monthly Clothing Retail Sales in US for 1992-2016'}
-# Load sales dataset
-data("sales")
-
-# Simulate based on data
-sales = gts(as.vector(sales), start = 1992, freq = 12, unit_time = "year",
-            unit_ts = bquote(paste(10^6,"$")), name_ts = "Retail Sales", 
-            data_name = "Monthly Clothing Retail Sales in US for 1992-2016")
-
-# Plot sales simulation
-plot(sales)
-```
-
-
-After creating the time series object, now we can compute its autocorrelation function and partial autocorrelation function by using `auto_corr()` as follows:
-
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 6: Empirical autocorrelation function of Monthly Clothing Retail Sales in US for 1992-2016'}
-# Compute ACF and plot result
-sales_acf = auto_corr(sales)
-plot(sales_acf)
-```
-
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 7: Empirical partial autocorrelation function of Monthly Clothing Retail Sales in US for 1992-2016'}
-#Compute PACF and plot result
-sales_pacf = auto_corr(sales, pacf = TRUE)
-plot(sales_pacf)
-```
-
-You can also use `corr_analysis()` function in the package to get the same results as above:  
-
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 8: Empirical ACF and PACF of Monthly Clothing Retail Sales in US for 1992-2016'}
-# Compute and plot ACF and PACF
-sales_corr = corr_analysis(sales)
-
-# Get ACF and PACF values
-sales_acf = sales_corr$ACF
-sales_pacf = sales_corr$PACF
-```
-
-The autocorrelation graph reveals that there exits some seasonal features in this time series. As we can expect, the sales data is likely to present similar behaviors from year to year.
-
-
 ### Lynx Dataset 
 
 We can look at another dataset, `lynx`, annual numbers of lynx trappings in Canada for 1821-1934 in the code below: 
+
 ```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 9: Plot of Annual numbers of lynx trappings for 1821-1934 in Canada'}
 # Load lynx dataset 
 data(lynx)
@@ -293,7 +248,7 @@ plot(lynx_pacf)
 
 The plot suggests some form of seasonality so one could estimate a SARMA(2,2,1) model and check its residuals as follows:
 
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 12: Empirical partial autocorrelation function of Annual numbers of lynx trappings in Canada for 1821-1934'}
+```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 12: Empirical partial autocorrelation function of Annual numbers of lynx trappings in Canada for 1821-1934', eval=TRUE}
 test = estimate(SARMA(2,2,1), lynx)
 check(test)
 ```
@@ -333,13 +288,13 @@ plot(sunspot_pacf)
 
 Let us estimate an AR(p) model and for this reason let us select the order:
 
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 16: Results on model selection for AR(p) models for Yearly numbers of sunspots from 1700 to 1988'}
+```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 16: Results on model selection for AR(p) models for Yearly numbers of sunspots from 1700 to 1988', eval=TRUE}
 select(AR(15), sunspot)
 ```
 
 The results of the model selection procedure seem to indicate that the AR(9) model is the best so let us use this model to predict the future 10 observations along with their 60%, 90% and 95% confidence intervals:
 
-```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 17: 10-steps-ahead forecasts (and confidence intervals) for Yearly numbers of sunspots from 1700 to 1988'}
+```{r, fig.align='center', fig.height = 4, fig.width = 7.25, fig.cap = 'Figure 17: 10-steps-ahead forecasts (and confidence intervals) for Yearly numbers of sunspots from 1700 to 1988', eval=TRUE}
 model_sunspots = estimate(AR(9), sunspot)
 predict(model_sunspots, n.ahead = 10, level = c(0.60, 0.90, 0.95))
 ```
