@@ -47,7 +47,7 @@ AR1 = function(phi = NULL, sigma2 = 1) {
   invisible(out)
 }
 
-#' Create an Sinusoidal (SIN) Process
+#' Definition of a Sinusoidal (SIN) Process
 #'
 #' @param alpha2 A \code{double} value for the squared amplitude parameter \eqn{\alpha^2}{alpha} (see Note for details).
 #' @param beta A \code{double} value for the angular frequency parameter \eqn{\beta}{beta} (see Note for details).
@@ -101,6 +101,205 @@ SIN = function(alpha2 = 9e-04, beta = 6e-02, U = NULL) {
                        starting = starting), class = "ts.model")
   invisible(out)
 }
+
+
+
+
+
+
+
+#' Definition of a Fractional Gaussian Noise (FGN) Process
+#'
+#' @param sigma2 A \code{double}.
+#' @param H A \code{double}.
+#' @return An S3 object containing the specified ts.model with the following structure:
+#' \describe{
+#'  \item{process.desc}{Used in summary: "SIGMA2","H"}
+#'  \item{theta}{Parameter vector including \eqn{\sigma^2}{sigma2}, \eqn{H}{H} }
+#'  \item{plength}{Number of parameters}
+#'  \item{print}{String containing simplified model}
+#'  \item{desc}{"FGN"}
+#'  \item{obj.desc}{Depth of Parameters e.g. list(1,1)}
+#'  \item{starting}{Find starting values? TRUE or FALSE (e.g. specified value)}
+#' }
+#' @author Lionel Voirol,  Davide Cucci
+#' @export
+#' @examples
+#' FGN()
+#' FGN(sigma2 = 1, H = 0.9999)
+FGN = function(sigma2 = 1, H = .9999) {
+  starting = FALSE;
+  if(is.null(sigma2)){
+    sigma2 = 1
+  }
+  if(is.null(H)){
+    H = 0.9999
+  }
+  if(length(sigma2) != 1 & length(H) != 1){
+    stop("Incorrect FGN model submitted. Must be double values for two parameters.")
+  }
+
+  out = structure(list(process.desc = c("SIGMA2","H"),
+                       theta = c(sigma2,H),
+                       plength = 2,
+                       desc = "FGN",
+                       print = "FGN()",
+                       obj.desc = list(c(1,1)),
+                       starting = starting), class = "ts.model")
+  invisible(out)
+}
+
+
+#' Definition of a Power Law Process
+#'
+#' @param sigma2 A \code{double}.
+#' @param d A \code{double}.
+#' @return An S3 object containing the specified ts.model with the following structure:
+#' \describe{
+#'  \item{process.desc}{Used in summary: "SIGMA2","d"}
+#'  \item{theta}{Parameter vector including \eqn{\sigma^2}{sigma2}, \eqn{d}{d}}
+#'  \item{plength}{Number of parameters}
+#'  \item{print}{String containing simplified model}
+#'  \item{desc}{"PLP"}
+#'  \item{obj.desc}{Depth of Parameters e.g. list(1,1)}
+#'  \item{starting}{Find starting values? TRUE or FALSE (e.g. specified value)}
+#' }
+#' @author Lionel Voirol,  Davide Cucci
+#' @export
+#' @examples
+#' PLP()
+#' PLP(sigma2 = 1, d = 0.4)
+PLP = function(sigma2 = 1, d = 0.4) {
+  starting = FALSE;
+  if(is.null(sigma2)){
+    sigma2 = 1
+  }
+  if(is.null(d)){
+    d = 0.4
+  }
+  if(length(sigma2) != 1 & length(d) != 1){
+    stop("Incorrect PLP model submitted. Must be double values for two parameters.")
+  }
+  
+  out = structure(list(process.desc = c("SIGMA2","d"),
+                       theta = c(sigma2,d),
+                       plength = 2,
+                       desc = "PLP",
+                       print = "PLP()",
+                       obj.desc = list(c(1,1)),
+                       starting = starting), class = "ts.model")
+  invisible(out)
+}
+
+
+
+
+
+
+#' Definition of a Matérn Process
+#'
+#' @param sigma2 A \code{double}.
+#' @param lambda A \code{double}.
+#' @param alpha A \code{double}.
+#' @return An S3 object containing the specified ts.model with the following structure:
+#' \describe{
+#'  \item{process.desc}{Used in summary: "SIGMA2","LAMBDA""ALPHA"}
+#'  \item{theta}{Parameter vector including \eqn{\sigma^2}{sigma2},  \eqn{\lambda}{lambda},\eqn{\alpha}{alpha}}
+#'  \item{plength}{Number of parameters}
+#'  \item{print}{String containing simplified model}
+#'  \item{desc}{"MAT"}
+#'  \item{obj.desc}{Depth of Parameters e.g. list(1,1,1)}
+#'  \item{starting}{Find starting values? TRUE or FALSE (e.g. specified value)}
+#' }
+#' @author Lionel Voirol,  Davide Cucci
+#' @export
+#' @examples
+#' MAT()
+#' MAT(sigma2 = 1, lambda = 0.35, alpha = 0.9)
+MAT = function(sigma2 = 1, lambda = 0.35, alpha = 0.9) {
+  starting = FALSE;
+  if(is.null(sigma2)){
+    sigma2 = 1
+  }
+  if(is.null(lambda)){
+    lambda = 0.35
+  }
+  if(is.null(alpha)){
+    lambda = 0.9
+  }
+  
+  if(length(sigma2) != 1 & length(lambda) != 1 & length(alpha) != 1){
+    stop("Incorrect MAT model submitted. Must be double values for three parameters.")
+  }
+  
+  out = structure(list(process.desc = c("SIGMA2","LAMBDA", "ALPHA"),
+                       theta = c(sigma2,lambda, alpha),
+                       plength = 3,
+                       desc = "MAT",
+                       print = "MAT()",
+                       obj.desc = list(c(1,1,1)),
+                       starting = starting), class = "ts.model")
+  invisible(out)
+}
+
+
+
+
+
+
+
+
+
+
+#' Definition of a Mean deterministic vector returned by the matrix by vector product of matrix \eqn{X} and vector \eqn{\beta} 
+#'
+#' @param X A \code{Matrix}  with dimension n*p.
+#' @param beta A \code{vector} with dimension p*1
+#' @return An S3 object containing the specified ts.model with the following structure:
+#' \describe{
+#'  \item{process.desc}{Used in summary: "X","BETA"}
+#'  \item{theta}{Matrix X, vector beta}
+#'  \item{plength}{Number of parameters}
+#'  \item{print}{String containing simplified model}
+#'  \item{desc}{"M"}
+#'  \item{obj.desc}{Depth of Parameters e.g. list(1,1)}
+#'  \item{starting}{Find starting values? TRUE or FALSE (e.g. specified value)}
+#' }
+#' @author Lionel Voirol,  Davide Cucci
+#' @export
+#' @examples
+#' X = matrix(rnorm(15*5), nrow = 15, ncol = 5)
+#' beta=seq(5)
+#' M(X = X, beta = beta)
+M = function(X, beta) {
+  starting =F
+  dim_mat = dim(X)[2]
+  length_beta = length(beta)
+  
+  #  ensure check on dimension of inputs
+  if(dim_mat != length_beta){
+    stop("Incorect dimensions in provided argument `X` and `beta`")
+  }
+  
+  out = structure(list(process.desc = c("X", "BETA"),
+                       theta = c(X, beta),
+                       plength = 2,
+                       desc = "M",
+                       print = "M()",
+                       obj.desc = list(c(1,1)),
+                       starting = starting), class = "ts.model")
+  invisible(out)
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 - 2018  James Balamuta, Stephane Guerrier, Roberto Molinari
+/* Copyright (C) 2014 - 2018  James Balamuta, Stephane Guerrier, Roberto Molinari, Davide Cucci, Lionel Voirol
  *
  * This file is part of simts R Methods Package
  *
@@ -60,9 +60,9 @@ arma::vec gen_wn(const unsigned int N, const double sigma2 = 1)
 
 
 
-//' Generate a Sinusoidal Process given \eqn{\alpha^2} and \eqn{\beta}.
+//' Generate a Sinusoidal Process given \eqn{\alpha^2}{alpha^2} and \eqn{\beta}{beta}.
 //' 
-//' Simulates a Sinusoidal Process Process with parameter \eqn{\alpha^2} and \eqn{\beta}
+//' Simulates a Sinusoidal Process Process with parameter \eqn{\alpha^2}{alpha^2}  and \eqn{\beta}{beta}
 //' @param N      An \code{integer} for signal length.
 //' @param alpha2 A \code{double} that contains the squared amplitude parameter alpha2.
 //' @param beta A \code{double} that contains the angular frequency parameter beta.
@@ -85,6 +85,213 @@ arma::vec gen_sin(const unsigned int N, const double alpha2 = 9e-04, const doubl
   
   return sn;
 }
+
+
+
+
+
+//' Generate a Fractional Gaussian noise given \eqn{\sigma^2}{sigma^2} and \eqn{H}{H}.
+//' 
+//' Simulates a Fractional Gaussian noise given \eqn{\sigma^2} and \eqn{H}.
+//' @param N      An \code{integer} for signal length.
+//' @param sigma2 A \code{double}.
+//' @param H A \code{double}.
+//' @return fgn A \code{vec} containing the Fractional Gaussian noise process.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+arma::vec gen_fgn(const unsigned int N, const double sigma2 = 1, const double H = 0.9){
+  // Obtaining namespace of longmemo package
+  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("longmemo");
+  
+  // Picking up functions from longmemo package
+  Rcpp::Function f1 = pkg["ckFGN0"];
+  Rcpp::Function f2 = pkg["simGauss"];
+  
+  //  generate acf
+  Rcpp::NumericVector res1 = f1(N, H);
+  Rcpp::NumericVector acf = res1 * sigma2;
+  
+  // simGauss on autocovariance vector
+  Rcpp::NumericVector fgn = f2(acf);
+  
+  //  return
+  return(fgn);
+  
+}
+
+
+
+//' Generate a Power Law Process given \eqn{\sigma^2} and \eqn{d}.
+//' 
+//' Simulates a a Power Law Process given \eqn{\sigma^2} and \eqn{d}.
+//' @param N An \code{integer} for signal length.
+//' @param sigma2 A \code{double}.
+//' @param d A \code{double}.
+//' @return plp A \code{vec} containing the Power Law Process.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+arma::vec gen_powerlaw(const unsigned int N, const double sigma2 = 1, const double d = 0.9){
+  // Obtaining namespace of longmemo package
+  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("longmemo");
+  
+
+  // Picking up functions from longmemo package
+  Rcpp::Function f1 = pkg["simGauss"];
+  
+  // calling gamma()
+  Rcpp::Function f2("gamma");   
+  
+  //  generate acf
+  Rcpp::NumericVector acf (N);
+  Rcpp::NumericVector res1 =  f2(1.0-2.0*d);
+  Rcpp::NumericVector res2 = f2(1.0-d);
+  Rcpp::NumericVector res3 = pow(res2, 2);
+  Rcpp::NumericVector res4 = res1 / res3 * sigma2;
+  
+  // assign value to first element of acf vector
+  acf(0) = res4(0);
+  
+  // fill acf vector
+  for(unsigned int i=1; i <= N-1; i++ ){
+    acf(i) = (d+i - 1.0) * acf(i-1) / (i-d);
+  }
+
+  // simGauss on autocovariance vector
+  Rcpp::NumericVector plp = f1(acf);
+  
+  //  return
+  return(plp);
+  
+}
+
+
+
+
+//' Ma function.
+//' 
+//' @param x A \code{double}.
+//' @param alpha A \code{double}.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+double Ma_cpp(const double x, const double alpha){
+  // calling gamma() from base R 
+  Rcpp::Function f1("gamma"); 
+  Rcpp::Function f2("besselK"); 
+  double val_1 = alpha - 0.5;
+  Rcpp::NumericVector val_2 = f1(val_1);
+  double val_3 = 2 / val_2(0);
+  double val_4 = pow(2, val_1 );
+  double val_5 = val_3 / val_4; // res 1
+  double val_6 = pow(fabs(x), val_1); // res 2
+  Rcpp::NumericVector val_7 = f2(fabs(x), fabs(val_1));
+  double val_8 = val_5 * val_6 * val_7(0);
+  return val_8;
+
+}
+
+
+//' Ma vectorized function.
+//' 
+//' @param x A \code{NumericVector}.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+Rcpp::NumericVector Ma_cpp_vec(const Rcpp::NumericVector x, double alpha){
+  double length_vec = x.length();
+  Rcpp::NumericVector transformed_x (length_vec);
+  // transform each element with Ma_cpp functions
+  for(unsigned int i=0; i <= length_vec-1; i++ ){
+    double val_i = x(i);
+    transformed_x(i) = Ma_cpp(val_i, alpha);
+  }
+  return transformed_x ;
+}
+  
+
+//' Generate a Matern Process given \eqn{\sigma^2}, \eqn{\lambda} and \eqn{\alpha}.
+//' 
+//' Simulates a Matern Process given \eqn{\sigma^2}, \eqn{\lambda} and \eqn{\alpha}.
+//' @param N An \code{integer} for signal length.
+//' @param sigma2 A \code{double}.
+//' @param lambda A \code{double}.
+//' @param alpha A \code{double}.
+//' @return mtp A \code{vec} containing the Matern Process.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+arma::vec gen_matern(const unsigned int N, const double sigma2 = 1, const double lambda = 0.35, double alpha = 0.9){
+  // Obtaining namespace of longmemo package
+  Rcpp::Environment pkg = Rcpp::Environment::namespace_env("longmemo");
+  
+  // Picking up functions from longmemo package
+  Rcpp::Function f1 = pkg["simGauss"];
+  
+  //  create acf vector
+  Rcpp::NumericVector acf (N);
+  
+  //  define first element as sigma2
+  acf(0) = sigma2;
+  
+  // define all other elements of acf vector
+  for(unsigned int i=1; i <= N-1; i++ ){
+    double lambda_i = lambda*i;
+    double acf_value_i = Ma_cpp(lambda_i, alpha);
+    double acf_value_i_2 = acf_value_i * sigma2;
+    acf(i) = acf_value_i_2;
+  }
+
+  // simGauss on autocovariance vector
+  Rcpp::NumericVector mtp = f1(acf);
+  
+  //  return
+  return(mtp);
+  
+}
+
+
+
+
+
+
+//' Generate a determinist vector returned by the matrix by vector product of matrix \eqn{X} and vector \eqn{\beta}.
+//' 
+//' Generate a determinist vector returned by the matrix by vector product of matrix \eqn{X} and vector \eqn{\beta}.
+//' @param X A \code{Matrix}  with dimension n*p.
+//' @param beta A \code{vector} with dimension p*1
+//' @return mean_vec A \code{vec} containing the determinist vector.
+//' @backref src/gen_process.cpp
+//' @backref src/gen_process.h
+//' @keywords internal
+//' @export
+// [[Rcpp::export]]
+arma::vec gen_mean(const arma::mat X,  const arma::vec beta){
+  // compute dimensions of input
+  double dim_2_X_mat = X.n_cols;
+  double length_beta = beta.n_elem;
+  // check on matrix X and beta vector
+  if (dim_2_X_mat != length_beta) {         
+    throw std::range_error("Incorrect dimensions for matrix X and vector `beta`. The number of columns of matrix X should be equal to the length of the vector beta.");
+  }
+  // matrix by vector multiplication
+  arma::vec mean_vec = X * beta;
+  return mean_vec;
+  
+}
+
+
 
 
 
@@ -694,6 +901,62 @@ arma::vec gen_model(unsigned int N, const arma::vec& theta, const std::vector<st
   	    
   	    x += gen_sin(N, theta_value, beta, U);
   	  }
+  	  // FGN
+  	  else if(element_type == "FGN"){
+  	    // First value is sigma2
+  	    ++i_theta;
+  	    
+  	    // get H
+  	    double H = theta(i_theta);
+
+  	    
+  	    x += gen_fgn(N, theta_value, H);
+  	  }
+  	  // PLP Power Law Process
+  	  else if(element_type == "PLP"){
+  	    // First value is sigma2
+  	    ++i_theta;
+  	    
+  	    // get d
+  	    double d = theta(i_theta);
+  	    
+  	    
+  	    x += gen_powerlaw(N, theta_value, d);
+  	  }
+  	  // MAT Matèrn process
+  	  else if(element_type == "MAT"){
+  	    // First value is sigma2 we update i_theta
+  	    ++i_theta;
+  	    
+  	    // get lambda
+  	    double lambda = theta(i_theta);
+  	    
+  	    //  get alpha
+  	    ++i_theta;
+  	    double alpha = theta(i_theta);
+  	    
+  	    // generate data
+  	    x += gen_matern(N, theta_value, lambda, alpha);
+  	  }
+  	  
+  	  // M() deterministic mean vector
+  	  // else if(element_type == "M"){
+  	  //   // First value is matrix X
+  	  //   ++i_theta;
+  	  //   
+  	  //   // get X
+  	  //   arma::mat X = theta(i_theta);
+  	  //   
+  	  //   //  get beta
+  	  //   ++i_theta;
+  	  //   double beta = theta(i_theta);
+  	  //   
+  	  //   // generate data
+  	  //   x += gen_mean(theta_value, beta);
+  	  // }
+  	  
+
+  	  
   	  // ARMA11
   	  else if(element_type == "ARMA11"){
   	    
@@ -807,6 +1070,55 @@ arma::mat gen_lts_cpp(unsigned int N, const arma::vec& theta, const std::vector<
       x.col(i) = gen_sin(N, theta_value, beta, U);
       x.col(num_desc) += x.col(i);
     }
+    // FGN
+    else if(element_type == "FGN"){
+      // First value is sigma2, increment for H
+      ++i_theta;
+      
+      // get H
+      double H = theta(i_theta);
+      
+      // generate data
+      x.col(i) = gen_fgn(N, theta_value, H);
+      x.col(num_desc) += x.col(i);
+    }
+    // PLP Power Law Process
+    else if(element_type == "PLP"){
+      // First value is sigma2
+      ++i_theta;
+      
+      // get d
+      double d = theta(i_theta);
+      
+      // generate data
+      x.col(i) = gen_powerlaw(N, theta_value, d);
+      x.col(num_desc) += x.col(i);
+    }
+    // MAT Matèrn process
+    else if(element_type == "MAT"){
+      // First value is sigma2 we update i_theta
+      ++i_theta;
+      
+      // get lambda
+      double lambda = theta(i_theta);
+      
+      //  get alpha
+      ++i_theta;
+      double alpha = theta(i_theta);
+      
+      // generate data
+      x.col(i) = gen_matern(N, theta_value, lambda, alpha);
+      x.col(num_desc) += x.col(i);
+    }
+    
+    
+    
+    
+    //  NEED TO ADD M() deterministic mean vector
+    
+    
+    
+    
     // WN
     else if(element_type == "WN") {
       x.col(i) = gen_wn(N, theta_value);

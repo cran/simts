@@ -1,8 +1,8 @@
 Package: simts
 Type: Package
 Title: Time Series Analysis Tools
-Version: 0.2.0
-Date: 2021-12-26
+Version: 0.2.1
+Date: 2022-09-02
 LazyData: true
 Authors@R: c(
     person("Stéphane", "Guerrier", email = "stef.guerrier@gmail.com", role = c("aut","cre","cph")),
@@ -26,7 +26,7 @@ License: AGPL-3 | file LICENSE
 Imports: Rcpp, stats, utils, scales, grDevices, graphics, broom, dplyr,
         magrittr, methods, purrr, tidyr, robcor
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
@@ -35,7 +35,7 @@ URL: https://github.com/SMAC-Group/simts,
 BugReports: https://github.com/SMAC-Group/simts/issues
 SystemRequirements: C++11
 NeedsCompilation: yes
-Packaged: 2022-01-03 14:58:28 UTC; lionel
+Packaged: 2022-09-03 14:06:36 UTC; lionel
 Author: Stéphane Guerrier [aut, cre, cph],
   James Balamuta [aut, cph],
   Roberto Molinari [aut, cph],
@@ -50,4 +50,4 @@ Author: Stéphane Guerrier [aut, cre, cph],
   Ross Ihaka [cph],
   R Core Team [cph]
 Repository: CRAN
-Date/Publication: 2022-01-03 17:50:02 UTC
+Date/Publication: 2022-09-03 17:00:02 UTC

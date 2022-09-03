@@ -626,9 +626,9 @@ gen_wn <- function(N, sigma2 = 1) {
     .Call('_simts_gen_wn', PACKAGE = 'simts', N, sigma2)
 }
 
-#' Generate a Sinusoidal Process given \eqn{\alpha^2} and \eqn{\beta}.
+#' Generate a Sinusoidal Process given \eqn{\alpha^2}{alpha^2} and \eqn{\beta}{beta}.
 #' 
-#' Simulates a Sinusoidal Process Process with parameter \eqn{\alpha^2} and \eqn{\beta}
+#' Simulates a Sinusoidal Process Process with parameter \eqn{\alpha^2}{alpha^2}  and \eqn{\beta}{beta}
 #' @param N      An \code{integer} for signal length.
 #' @param alpha2 A \code{double} that contains the squared amplitude parameter alpha2.
 #' @param beta A \code{double} that contains the angular frequency parameter beta.
@@ -642,6 +642,89 @@ gen_wn <- function(N, sigma2 = 1) {
 #' @export
 gen_sin <- function(N, alpha2 = 9e-04, beta = 6e-02, U = 1) {
     .Call('_simts_gen_sin', PACKAGE = 'simts', N, alpha2, beta, U)
+}
+
+#' Generate a Fractional Gaussian noise given \eqn{\sigma^2}{sigma^2} and \eqn{H}{H}.
+#' 
+#' Simulates a Fractional Gaussian noise given \eqn{\sigma^2} and \eqn{H}.
+#' @param N      An \code{integer} for signal length.
+#' @param sigma2 A \code{double}.
+#' @param H A \code{double}.
+#' @return fgn A \code{vec} containing the Fractional Gaussian noise process.
+#' @backref src/gen_process.cpp
+#' @backref src/gen_process.h
+#' @keywords internal
+#' @export
+gen_fgn <- function(N, sigma2 = 1, H = 0.9) {
+    .Call('_simts_gen_fgn', PACKAGE = 'simts', N, sigma2, H)
+}
+
+#' Generate a Power Law Process given \eqn{\sigma^2} and \eqn{d}.
+#' 
+#' Simulates a a Power Law Process given \eqn{\sigma^2} and \eqn{d}.
+#' @param N An \code{integer} for signal length.
+#' @param sigma2 A \code{double}.
+#' @param d A \code{double}.
+#' @return plp A \code{vec} containing the Power Law Process.
+#' @backref src/gen_process.cpp
+#' @backref src/gen_process.h
+#' @keywords internal
+#' @export
+gen_powerlaw <- function(N, sigma2 = 1, d = 0.9) {
+    .Call('_simts_gen_powerlaw', PACKAGE = 'simts', N, sigma2, d)
+}
+
+#' Ma function.
+#' 
+#' @param x A \code{double}.
+#' @param alpha A \code{double}.
+#' @backref src/gen_process.cpp
+#' @backref src/gen_process.h
+#' @keywords internal
+#' @export
+Ma_cpp <- function(x, alpha) {
+    .Call('_simts_Ma_cpp', PACKAGE = 'simts', x, alpha)
+}
+
+#' Ma vectorized function.
+#' 
+#' @param x A \code{NumericVector}.
+#' @backref src/gen_process.cpp
+#' @backref src/gen_process.h
+#' @keywords internal
+#' @export
+Ma_cpp_vec <- function(x, alpha) {
+    .Call('_simts_Ma_cpp_vec', PACKAGE = 'simts', x, alpha)
+}
+
+#' Generate a Matern Process given \eqn{\sigma^2}, \eqn{\lambda} and \eqn{\alpha}.
+#' 
+#' Simulates a Matern Process given \eqn{\sigma^2}, \eqn{\lambda} and \eqn{\alpha}.
+#' @param N An \code{integer} for signal length.
+#' @param sigma2 A \code{double}.
+#' @param lambda A \code{double}.
+#' @param alpha A \code{double}.
+#' @return mtp A \code{vec} containing the Matern Process.
+#' @backref src/gen_process.cpp
+#' @backref src/gen_process.h
+#' @keywords internal
+#' @export
+gen_matern <- function(N, sigma2 = 1, lambda = 0.35, alpha = 0.9) {
+    .Call('_simts_gen_matern', PACKAGE = 'simts', N, sigma2, lambda, alpha)
+}
+
+#' Generate a determinist vector returned by the matrix by vector product of matrix \eqn{X} and vector \eqn{\beta}.
+#' 
+#' Generate a determinist vector returned by the matrix by vector product of matrix \eqn{X} and vector \eqn{\beta}.
+#' @param X A \code{Matrix}  with dimension n*p.
+#' @param beta A \code{vector} with dimension p*1
+#' @return mean_vec A \code{vec} containing the determinist vector.
+#' @backref src/gen_process.cpp
+#' @backref src/gen_process.h
+#' @keywords internal
+#' @export
+gen_mean <- function(X, beta) {
+    .Call('_simts_gen_mean', PACKAGE = 'simts', X, beta)
 }
 
 #' Generate a Drift Process

@@ -652,6 +652,82 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gen_fgn
+arma::vec gen_fgn(const unsigned int N, const double sigma2, const double H);
+RcppExport SEXP _simts_gen_fgn(SEXP NSEXP, SEXP sigma2SEXP, SEXP HSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const unsigned int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const double >::type sigma2(sigma2SEXP);
+    Rcpp::traits::input_parameter< const double >::type H(HSEXP);
+    rcpp_result_gen = Rcpp::wrap(gen_fgn(N, sigma2, H));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gen_powerlaw
+arma::vec gen_powerlaw(const unsigned int N, const double sigma2, const double d);
+RcppExport SEXP _simts_gen_powerlaw(SEXP NSEXP, SEXP sigma2SEXP, SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const unsigned int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const double >::type sigma2(sigma2SEXP);
+    Rcpp::traits::input_parameter< const double >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(gen_powerlaw(N, sigma2, d));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Ma_cpp
+double Ma_cpp(const double x, const double alpha);
+RcppExport SEXP _simts_Ma_cpp(SEXP xSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(Ma_cpp(x, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Ma_cpp_vec
+Rcpp::NumericVector Ma_cpp_vec(const Rcpp::NumericVector x, double alpha);
+RcppExport SEXP _simts_Ma_cpp_vec(SEXP xSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(Ma_cpp_vec(x, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gen_matern
+arma::vec gen_matern(const unsigned int N, const double sigma2, const double lambda, double alpha);
+RcppExport SEXP _simts_gen_matern(SEXP NSEXP, SEXP sigma2SEXP, SEXP lambdaSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const unsigned int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const double >::type sigma2(sigma2SEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(gen_matern(N, sigma2, lambda, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gen_mean
+arma::vec gen_mean(const arma::mat X, const arma::vec beta);
+RcppExport SEXP _simts_gen_mean(SEXP XSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(gen_mean(X, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gen_dr
 arma::vec gen_dr(const unsigned int N, const double omega);
 RcppExport SEXP _simts_gen_dr(SEXP NSEXP, SEXP omegaSEXP) {
@@ -2282,6 +2358,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simts_brick_wall", (DL_FUNC) &_simts_brick_wall, 3},
     {"_simts_gen_wn", (DL_FUNC) &_simts_gen_wn, 2},
     {"_simts_gen_sin", (DL_FUNC) &_simts_gen_sin, 4},
+    {"_simts_gen_fgn", (DL_FUNC) &_simts_gen_fgn, 3},
+    {"_simts_gen_powerlaw", (DL_FUNC) &_simts_gen_powerlaw, 3},
+    {"_simts_Ma_cpp", (DL_FUNC) &_simts_Ma_cpp, 2},
+    {"_simts_Ma_cpp_vec", (DL_FUNC) &_simts_Ma_cpp_vec, 2},
+    {"_simts_gen_matern", (DL_FUNC) &_simts_gen_matern, 4},
+    {"_simts_gen_mean", (DL_FUNC) &_simts_gen_mean, 2},
     {"_simts_gen_dr", (DL_FUNC) &_simts_gen_dr, 2},
     {"_simts_gen_qn", (DL_FUNC) &_simts_gen_qn, 2},
     {"_simts_gen_ar1", (DL_FUNC) &_simts_gen_ar1, 3},
