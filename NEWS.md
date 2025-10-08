@@ -1,3 +1,8 @@
+# simts 0.2.3
+
+- solved problems related to documentation with itemize tags in return tags that were creating problems on check
+- moved from arma::is_finite to std::isfinite in file src/rtoarmadillo.cpp
+
 # simts 0.2.0
 
 ## Features
